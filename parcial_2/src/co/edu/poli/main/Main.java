@@ -16,8 +16,6 @@ public class Main {
         ImplementacionCRUD gestion = new ImplementacionCRUD();
         String archivo = "productos.dat";
 
-        gestion.deserializar(archivo);
-
         boolean salir = false;
         while (!salir) {
             mostrarMenu();
@@ -40,10 +38,16 @@ public class Main {
                         eliminarProducto(scanner, gestion);
                         break;
                     case 5:
+                        guardarArchivo(gestion, archivo);
+                        break;
+                    case 6:
+                        cargarArchivo(gestion, archivo);
+                        break;
+                    case 7:
                         salir = true;
                         break;
                     default:
-                        System.out.println("Opción no válida. Por favor, elige un número del 1 al 5.");
+                        System.out.println("Opción no válida. Por favor, elige un número del 1 al 7.");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Error: Debes introducir un número. Intenta de nuevo.");
@@ -51,24 +55,25 @@ public class Main {
             }
         }
 
-        gestion.serializar(archivo);
-        System.out.println("Datos guardados. ¡Hasta pronto!");
+        System.out.println("¡Hasta pronto!");
         scanner.close();
     }
 
     public static void mostrarMenu() {
-        System.out.println(" MENÚ DE GESTIÓN DE PRODUCTOS");
+        System.out.println("\n=== MENÚ DE GESTIÓN DE PRODUCTOS ===");
         System.out.println("1. Añadir un nuevo producto");
         System.out.println("2. Listar todos los productos");
         System.out.println("3. Modificar un producto");
         System.out.println("4. Eliminar un producto");
-        System.out.println("5. Guardar y Salir");
+        System.out.println("5. Guardar archivo");
+        System.out.println("6. Cargar archivo");
+        System.out.println("7. Salir");
         System.out.print("Elige una opción: ");
     }
 
     public static void agregarProducto(Scanner scanner, ImplementacionCRUD gestion) {
         try {
-            System.out.println(" Añadir Nuevo Producto ");
+            System.out.println("\n=== AÑADIR NUEVO PRODUCTO ===");
             System.out.print("¿Qué tipo de producto es? (1: Electrónico, 2: Ropa): ");
             int tipo = scanner.nextInt();
             scanner.nextLine();
@@ -108,6 +113,7 @@ public class Main {
             }
 
             gestion.crear(nuevoProducto);
+            System.out.println("Producto añadido correctamente.");
 
         } catch (InputMismatchException e) {
             System.out.println("Error: Has introducido un tipo de dato incorrecto. Vuelve a intentarlo.");
@@ -116,7 +122,7 @@ public class Main {
     }
 
     public static void modificarProducto(Scanner scanner, ImplementacionCRUD gestion) {
-        System.out.println("Modificar Producto");
+        System.out.println("\n=== MODIFICAR PRODUCTO ===");
         System.out.print("Introduce el código del producto a modificar: ");
         String codigo = scanner.nextLine();
 
@@ -148,16 +154,47 @@ public class Main {
     }
 
     public static void eliminarProducto(Scanner scanner, ImplementacionCRUD gestion) {
-        System.out.println("Eliminar producto");
+        System.out.println("\n=== ELIMINAR PRODUCTO ===");
         System.out.print("Introduce el código del producto a eliminar: ");
         String codigo = scanner.nextLine();
+        
+        Producto producto = gestion.leer(codigo);
+        if (producto == null) {
+            System.out.println("No se encontró ningún producto con ese código.");
+            return;
+        }
+        
         gestion.eliminar(codigo);
+        System.out.println("Producto eliminado correctamente.");
+    }
+    
+    public static void guardarArchivo(ImplementacionCRUD gestion, String archivo) {
+        System.out.println("\n=== GUARDAR ARCHIVO ===");
+        try {
+            gestion.serializar(archivo);
+            System.out.println("Datos guardados correctamente en: " + archivo);
+        } catch (Exception e) {
+            System.out.println("Error al guardar el archivo: " + e.getMessage());
+        }
+    }
+    
+    public static void cargarArchivo(ImplementacionCRUD gestion, String archivo) {
+        System.out.println("\n=== CARGAR ARCHIVO ===");
+        try {
+            gestion.deserializar(archivo);
+            System.out.println("Datos cargados correctamente desde: " + archivo);
+            System.out.println("Total de productos cargados: " + gestion.enlistar().size());
+        } catch (Exception e) {
+            System.out.println("Error al cargar el archivo: " + e.getMessage());
+            System.out.println("Si es la primera vez que ejecutas el programa, esto es normal.");
+        }
     }
     
     public static void imprimirInventario(ImplementacionCRUD gestion) {
         if (gestion.enlistar().isEmpty()) {
             System.out.println("El inventario está vacío.");
         } else {
+            System.out.println("Total de productos: " + gestion.enlistar().size());
             for (Producto p : gestion.enlistar()) {
                 System.out.println(p);
             }
