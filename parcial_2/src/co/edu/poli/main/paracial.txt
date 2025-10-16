@@ -1,0 +1,298 @@
+
+
+/**
+ * Representa a un proveedor de productos.
+ * Esta clase almacena información sobre el identificador, nombre y país de origen del proveedor.
+ * Es serializable para permitir la persistencia de datos.
+ */
+public class Proveedor implements Serializable {
+
+    /**
+     * Constructor para crear un nuevo objeto Proveedor.
+     *
+     * @param id El identificador único del proveedor.
+     * @param nombre El nombre comercial del proveedor.
+     * @param paisOrigen El país de origen del proveedor.
+     */
+    public Proveedor(String id, String nombre, String paisOrigen) {}
+
+    /**
+     * Obtiene el ID del proveedor.
+     * @return El ID del proveedor.
+     */
+    public String getId() {}
+
+    /**
+     * Establece el ID del proveedor.
+     * @param id El nuevo ID a establecer.
+     */
+    public void setId(String id) {}
+
+    /**
+     * Obtiene el nombre del proveedor.
+     * @return El nombre del proveedor.
+     */
+    public String getNombre() {}
+
+    /**
+     * Establece el nombre del proveedor.
+     * @param nombre El nuevo nombre a establecer.
+     */
+    public void setNombre(String nombre) {}
+
+    /**
+     * Obtiene el país de origen del proveedor.
+     * @return El país de origen.
+     */
+    public String getPaisOrigen() {}
+
+    /**
+     * Establece el país de origen del proveedor.
+     * @param paisOrigen El nuevo país a establecer.
+     */
+    public void setPaisOrigen(String paisOrigen) {}
+
+    /**
+     * Devuelve una representación en cadena del objeto Proveedor.
+     * @return Una cadena que contiene los detalles del proveedor.
+     */
+    @Override
+    public String toString() {}
+}
+
+/**
+ * Clase abstracta que representa un producto genérico en el inventario.
+ * Define los atributos y comportamientos comunes a todos los productos,
+ * como código, nombre, precio, stock y proveedor.
+ * Debe ser extendida por clases de productos específicas.
+ */
+public abstract class Producto implements Serializable {
+
+    /**
+     * Constructor para la clase abstracta Producto.
+     *
+     * @param codigo El código único del producto.
+     * @param nombre El nombre del producto.
+     * @param precio El precio del producto.
+     * @param stock La cantidad disponible en inventario.
+     * @param proveedor El objeto Proveedor asociado a este producto.
+     */
+    public Producto(String codigo, String nombre, double precio, int stock, Proveedor proveedor) {}
+    
+    /** @return El código del producto. */
+    public String getCodigo() {}
+    /** @param codigo El nuevo código del producto. */
+    public void setCodigo(String codigo) {}
+    /** @return El nombre del producto. */
+    public String getNombre() {}
+    /** @param nombre El nuevo nombre del producto. */
+    public void setNombre(String nombre) {}
+    /** @return El precio del producto. */
+    public double getPrecio() {}
+    /** @param precio El nuevo precio del producto. */
+    public void setPrecio(double precio) {}
+    /** @return El stock disponible. */
+    public int getStock() {}
+    /** @param stock El nuevo stock disponible. */
+    public void setStock(int stock) {}
+    /** @return El proveedor del producto. */
+    public Proveedor getProveedor() {}
+    /** @param proveedor El nuevo proveedor del producto. */
+    public void setProveedor(Proveedor proveedor) {}
+
+    /**
+     * Devuelve una representación en cadena de los atributos comunes del producto.
+     * @return Una cadena con la información básica del producto.
+     */
+    @Override
+    public String toString() {}
+}
+
+/**
+ * Representa un producto de tipo electrónico.
+ * Extiende la clase Producto y añade una característica específica:
+ * la duración de la garantía en meses.
+ */
+public class Electronico extends Producto {
+
+    /**
+     * Constructor para crear un nuevo producto electrónico.
+     *
+     * @param codigo El código único del producto.
+     * @param nombre El nombre del producto.
+     * @param precio El precio del producto.
+     * @param stock La cantidad disponible en inventario.
+     * @param proveedor El proveedor del producto.
+     * @param garantiaMeses El número de meses de garantía.
+     */
+    public Electronico(String codigo, String nombre, double precio, int stock, Proveedor proveedor, int garantiaMeses) {}
+
+    /**
+     * Obtiene los meses de garantía del producto.
+     * @return Los meses de garantía.
+     */
+    public int getGarantiaMeses() {}
+
+    /**
+     * Establece los meses de garantía del producto.
+     * @param garantiaMeses Los nuevos meses de garantía.
+     */
+    public void setGarantiaMeses(int garantiaMeses) {}
+
+    /**
+     * Devuelve una representación en cadena del producto electrónico,
+     * incluyendo su información base y los meses de garantía.
+     * @return Una cadena con los detalles completos del producto.
+     */
+    @Override
+    public String toString() {}
+}
+
+/**
+ * Representa un producto de tipo ropa.
+ * Extiende la clase Producto y añade una característica específica: la talla.
+ */
+public class Ropa extends Producto {
+
+    /**
+     * Constructor para crear un nuevo producto de ropa.
+     *
+     * @param codigo El código único del producto.
+     * @param nombre El nombre del producto.
+     * @param precio El precio del producto.
+     * @param stock La cantidad disponible en inventario.
+     * @param proveedor El proveedor del producto.
+     * @param talla La talla de la prenda (ej. S, M, L).
+     */
+    public Ropa(String codigo, String nombre, double precio, int stock, Proveedor proveedor, String talla) {}
+
+    /**
+     * Obtiene la talla de la prenda.
+     * @return La talla.
+     */
+    public String getTalla() {}
+
+    /**
+     * Establece la talla de la prenda.
+     * @param talla La nueva talla.
+     */
+    public void setTalla(String talla) {}
+
+    /**
+     * Devuelve una representación en cadena del producto de ropa,
+     * incluyendo su información base y la talla.
+     * @return Una cadena con los detalles completos del producto.
+     */
+    @Override
+    public String toString() {}
+}
+
+/**
+ * Interfaz que define el contrato para las operaciones CRUD (Crear, Leer, Modificar, Eliminar)
+ * y de persistencia (serializar, deserializar) para los productos.
+ */
+public interface OperacionCRUD {
+    /**
+     * Añade un nuevo producto al repositorio de datos.
+     * @param producto El producto a crear.
+     */
+    void crear(Producto producto);
+
+    /**
+     * Busca y devuelve un producto basado en su código.
+     * @param codigo El código del producto a buscar.
+     * @return El objeto Producto si se encuentra, de lo contrario null.
+     */
+    Producto leer(String codigo);
+
+    /**
+     * Actualiza la información de un producto existente.
+     * @param producto El producto con los datos actualizados.
+     */
+    void modificar(Producto producto);
+
+    /**
+     * Elimina un producto del repositorio de datos basado en su código.
+     * @param codigo El código del producto a eliminar.
+     */
+    void eliminar(String codigo);
+
+    /**
+     * Devuelve una lista con todos los productos almacenados.
+     * @return Una lista de objetos Producto.
+     */
+    List<Producto> enlistar();
+
+    /**
+     * Guarda la lista de productos en un archivo mediante serialización.
+     * @param nombreArchivo El nombre del archivo donde se guardarán los datos.
+     */
+    void serializar(String nombreArchivo);
+
+    /**
+     * Carga la lista de productos desde un archivo mediante deserialización.
+     * @param nombreArchivo El nombre del archivo desde donde se cargarán los datos.
+     * @return La lista de productos deserializada.
+     */
+    List<Producto> deserializar(String nombreArchivo);
+}
+
+/**
+ * Implementación de la interfaz OperacionCRUD que gestiona una lista de productos en memoria
+ * y proporciona la funcionalidad para la persistencia de datos a través de la serialización.
+ */
+public class ImplementacionCRUD implements OperacionCRUD {
+
+    /**
+     * Constructor que inicializa la lista de productos.
+     */
+    public ImplementacionCRUD() {}
+}
+
+/**
+ * Clase principal que actúa como punto de entrada de la aplicación.
+ * Proporciona una interfaz de línea de comandos (CLI) para que el usuario
+ * interactúe con el sistema de gestión de inventario.
+ */
+public class Main {
+
+    /**
+     * Método principal que ejecuta el bucle del menú de la aplicación.
+     * @param args Argumentos de la línea de comandos (no se utilizan).
+     */
+    public static void main(String[] args) {}
+
+    /**
+     * Muestra el menú principal de opciones al usuario.
+     */
+    public static void mostrarMenu() {}
+
+    /**
+     * Gestiona la lógica para solicitar al usuario los datos de un nuevo producto
+     * y añadirlo al sistema.
+     * @param scanner La instancia de Scanner para leer la entrada del usuario.
+     * @param gestion La instancia de ImplementacionCRUD para realizar la operación de creación.
+     */
+    public static void agregarProducto(Scanner scanner, ImplementacionCRUD gestion) {}
+
+    /**
+     * Gestiona la lógica para solicitar el código de un producto,
+     * pedir los nuevos datos y actualizarlo.
+     * @param scanner La instancia de Scanner para leer la entrada del usuario.
+     * @param gestion La instancia de ImplementacionCRUD para realizar la operación de modificación.
+     */
+    public static void modificarProducto(Scanner scanner, ImplementacionCRUD gestion) {}
+
+    /**
+     * Gestiona la lógica para solicitar el código de un producto y eliminarlo del sistema.
+     * @param scanner La instancia de Scanner para leer la entrada del usuario.
+     * @param gestion La instancia de ImplementacionCRUD para realizar la operación de eliminación.
+     */
+    public static void eliminarProducto(Scanner scanner, ImplementacionCRUD gestion) {}
+    
+    /**
+     * Imprime en la consola la lista de todos los productos en el inventario.
+     * @param gestion La instancia de ImplementacionCRUD que contiene la lista de productos.
+     */
+    public static void imprimirInventario(ImplementacionCRUD gestion) {}
+}
