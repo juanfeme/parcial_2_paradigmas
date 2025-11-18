@@ -1,78 +1,105 @@
 package co.edu.poli.servicios;
 
-import co.edu.poli.modelo.Producto;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import co.edu.poli.modelo.*;
 
 public class ImplementacionCRUD implements OperacionCRUD {
-    private List<Producto> lista;
-
+    private List<Producto> productos;
+    
     public ImplementacionCRUD() {
-        this.lista = new ArrayList<>();
+        this.productos = new ArrayList<>();
     }
-
+    
     @Override
-    public void crear(Producto producto) {
-        lista.add(producto);
-        System.out.println("Producto '" + producto.getNombre() + "' creado.");
+    public void crearElectronico(String codigo, String nombre, double precio, 
+                               int stock, Proveedor proveedor, int garantiaMeses) {
+        Electronico electronico = new Electronico(codigo, nombre, precio, stock, proveedor, garantiaMeses);
+        productos.add(electronico);
+        System.out.println("✓ Producto electrónico '" + nombre + "' creado exitosamente.");
     }
-
+    
     @Override
-    public Producto leer(String codigo) {
-        for (Producto p : lista) {
-            if (p.getCodigo().equals(codigo)) {
-                return p;
+    public void crearRopa(String codigo, String nombre, double precio, 
+                         int stock, Proveedor proveedor, String talla) {
+        Ropa ropa = new Ropa(codigo, nombre, precio, stock, proveedor, talla);
+        productos.add(ropa);
+        System.out.println("✓ Producto de ropa '" + nombre + "' creado exitosamente.");
+    }
+    
+    @Override
+    public List<Producto> listarProductos() {
+        return new ArrayList<>(productos); // Retorna copia para evitar modificación externa
+    }
+    
+    @Override
+    public Producto buscarElectronico(String codigo) {
+        for (Producto producto : productos) {
+            if (producto instanceof Electronico && producto.getCodigo().equals(codigo)) {
+                return producto;
             }
         }
         return null;
     }
-
+    
     @Override
-    public void modificar(Producto productoModificado) {
-        for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getCodigo().equals(productoModificado.getCodigo())) {
-                lista.set(i, productoModificado);
-                System.out.println("Producto con código '" + productoModificado.getCodigo() + "' modificado.");
+    public void modificarRopa(String codigo, String nuevoNombre, Double nuevoPrecio, 
+                             Integer nuevoStock, String nuevaTalla) {
+        for (Producto producto : productos) {
+            if (producto instanceof Ropa && producto.getCodigo().equals(codigo)) {
+                Ropa ropa = (Ropa) producto;
+                if (nuevoNombre != null) ropa.setNombre(nuevoNombre);
+                if (nuevoPrecio != null) ropa.setPrecio(nuevoPrecio);
+                if (nuevoStock != null) ropa.setStock(nuevoStock);
+                if (nuevaTalla != null) ropa.setTalla(nuevaTalla);
+                System.out.println("✓ Producto de ropa modificado exitosamente.");
                 return;
             }
         }
+        System.out.println("✗ No se encontró producto de ropa con código: " + codigo);
     }
-
+    
     @Override
-    public void eliminar(String codigo) {
-        Producto aEliminar = leer(codigo);
-        if (aEliminar != null) {
-            lista.remove(aEliminar);
-            System.out.println("Producto '" + aEliminar.getNombre() + "' eliminado.");
-        } else {
-            System.out.println("No se encontró producto con el código " + codigo);
+    public boolean eliminarElectronico(String codigo) {
+        for (int i = 0; i < productos.size(); i++) {
+            Producto producto = productos.get(i);
+            if (producto instanceof Electronico && producto.getCodigo().equals(codigo)) {
+                productos.remove(i);
+                System.out.println("✓ Producto electrónico eliminado exitosamente.");
+                return true;
+            }
         }
+        System.out.println("✗ No se encontró producto electrónico con código: " + codigo);
+        return false;
     }
-
+    
     @Override
-    public List<Producto> enlistar() {
-        return lista;
-    }
-
-    @Override
-    public void serializar(String nombreArchivo) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nombreArchivo))) {
-            oos.writeObject(lista);
-            System.out.println("Datos serializados correctamente en " + nombreArchivo);
+    @SuppressWarnings("unchecked")
+    public void guardarArchivo(String archivo) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
+            oos.writeObject(productos);
+            System.out.println("✓ Datos guardados exitosamente en: " + archivo);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("✗ Error al guardar: " + e.getMessage());
         }
     }
-
+    
     @Override
-    public List<Producto> deserializar(String nombreArchivo) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
-            lista = (List<Producto>) ois.readObject();
+    @SuppressWarnings("unchecked")
+    public void leerArchivo(String archivo) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+            productos = (List<Producto>) ois.readObject();
+            System.out.println("✓ Datos cargados exitosamente desde: " + archivo);
+        } catch (FileNotFoundException e) {
+            System.out.println("ℹ El archivo no existe. Se creará uno nuevo al guardar.");
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("No se encontró el archivo, se creará uno nuevo al serializar.");
-            this.lista = new ArrayList<>();
+            System.out.println("✗ Error al leer: " + e.getMessage());
         }
-        return lista;
+    }
+    
+    // Método adicional para obtener todos los productos (sin copia)
+    public List<Producto> getProductos() {
+        return productos;
     }
 }
